@@ -1,0 +1,28 @@
+{% include "base.html"%}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+</head>
+<body>
+<section id="register" style="background: url('../static/assets/images/background-img.png') no-repeat;">
+    <div class="container ">
+        <div class="row my-5 py-5">
+            <div class="offset-md-3 col-md-6 my-5 ">
+                <h2 class="display-3 fw-normal text-center"><span
+                        class="text-primary">Thank you for your purchase!</span></h2>
+
+                <p>Your payment was successful.</p>
+                <p>Your session ID is: {{ session_id }}</p>
+                <button class="w-100 btn btn-primary btn-lg" type="submit" fdprocessedid="2tfifa"> <a href="{{ url_for('index') }}">Return to Home</a></button>
+
+
+            </div>
+        </div>
+    </div>
+
+</section>
+>
+</body>
+{% include "footer.html"%}
+

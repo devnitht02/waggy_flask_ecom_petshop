@@ -1,0 +1,41 @@
+{% include 'base.html'%}
+
+{% block content%}
+
+<!--#REGISTERATION FORM-->
+<section id="register" style="background: url('../static/assets/images/background-img.png') no-repeat;">
+    <div class="container ">
+        <div class="row my-5 py-5">
+            <div class="offset-md-3 col-md-6 my-5 ">
+                <h2 class="display-3 fw-normal text-center"><span class="text-primary">Log In</span>
+                </h2>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <p class="flash">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="mb-3">
+                        <input type="email" class="form-control form-control-lg" name="email" id="email"
+                               placeholder="Enter Your Email Address">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control form-control-lg" name="password" id="password1"
+                               placeholder="Create Password">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark btn-lg rounded-1">Register it now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+{% include 'footer.html'%}

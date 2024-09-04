@@ -1,0 +1,23 @@
+{%include "base.html"%}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Accept a payment</title>
+    <meta name="description" content="A demo of a payment on Stripe" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../static/css/stripe_styles.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="../static/js/checkout.js" defer></script>
+  </head>
+  <body>
+    <h1>Payment</h1>
+    <!-- Stripe Elements form -->
+    <form id="payment-form">
+      <div id="card-element">
+        <!-- A Stripe Element will be inserted here. -->
+      </div>
+      <button id="submit">Pay</button>
+      <div id="error-message" role="alert"></div>
+    </form>
+  </body>
+{%include "footer.html"%}
