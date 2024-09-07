@@ -1,0 +1,59 @@
+<!-- PET CLOTHING SECTION -->
+<section id="clothing" class="my-5 overflow-hidden">
+    <div class="container pb-5">
+        <div class="section-header d-md-flex justify-content-between align-items-center mb-3">
+            <h2 class="display-3 fw-normal">Pet Clothing</h2>
+            <div>
+                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
+                    shop now
+                    <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
+                        <use xlink:href="#arrow-right"></use>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="products-carousel swiper">
+            <div class="swiper-wrapper">
+                {% for item in clothing_items %}
+                    <div class="swiper-slide">
+                        <div class="card position-relative">
+                            <a href="single-product.html">
+                                <img src="{{ url_for('static', filename='assets/images/' + item.image_file) }}"
+                                     class="img-fluid rounded-4" alt="{{ item.name }}">
+                            </a>
+                            <div class="card-body p-0">
+                                <a href="single-product.html">
+                                    <h3 class="card-title pt-4 m-0">{{ item.name }}</h3>
+                                </a>
+                                <div class="card-text">
+                                    <span class="rating secondary-font">
+                                        {% for i in range(5) %}
+                                            {% if i < item.rating %}
+                                                <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                            {% else %}
+                                                <iconify-icon icon="clarity:star-line" class="text-primary"></iconify-icon>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ item.rating }}
+                                    </span>
+                                    <h3 class="secondary-font text-primary">${{ item.price }}</h3>
+                                    <div class="d-flex flex-wrap mt-3">
+                                        <a href="{{ url_for('add_to_cart', item_id=item.id) }}" class="btn-cart me-3 px-4 pt-3 pb-3">
+                                            <h5 class="text-uppercase m-0">Add to Cart</h5>
+                                        </a>
+                                        <a href="#" class="btn-wishlist px-4 pt-3">
+                                            <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No clothing items available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,65 @@
+<section id="foodies" class="my-5">
+    <div class="container my-5 py-5">
+        <div class="section-header d-md-flex justify-content-between align-items-center">
+            <h2 class="display-3 fw-normal">Pet Foodies</h2>
+                  </div>
+        <div class="isotope-container row">
+            {% for foodie in foodies %}
+                <div class="item {{ foodie.category }} col-md-4 col-lg-3 my-4">
+                    <div class="card position-relative">
+                        <a href="{{ url_for('single_product', product_id=foodie.id) }}">
+                            <img src="{{ url_for('static', filename='assets/images/' + foodie.image_file) }}"
+                                 class="img-fluid rounded-4" alt="{{ foodie.name }}">
+                        </a>
+                        <div class="card-body p-0">
+                            <a href="{{ url_for('single_product', product_id=foodie.id) }}">
+                                <h3 class="card-title pt-4 m-0">{{ foodie.name }}</h3>
+                            </a>
+                            <div class="card-text">
+                                <span class="rating secondary-font">
+                                    {% for i in range(5) %}
+                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                    {% endfor %}
+                                    5.0
+                                </span>
+                                <h3 class="secondary-font text-primary">${{ foodie.price }}</h3>
+                                <div class="d-flex flex-wrap mt-3">
+                                    <a href="{{ url_for('add_to_cart', product_id=foodie.id) }}"
+                                       class="btn-cart me-3 px-4 pt-3 pb-3">
+                                        <h5 class="text-uppercase m-0">Add to Cart</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">No foodies available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!--#section 4 BANNER CLEARANCE SALE-->
+<section id="banner-2" class="my-3" style="background: #F9F3EC;">
+    <div class="container">
+        <div class="row flex-row-reverse banner-content align-items-center">
+            <div class="img-wrapper col-12 col-md-6">
+                <img src="../static/assets/images/banner-img2.png" class="img-fluid">
+            </div>
+            <div class="content-wrapper col-12 offset-md-1 col-md-5 p-5">
+                <div class="secondary-font text-primary text-uppercase mb-3 fs-4">Upto 40% off</div>
+                <h2 class="banner-title display-1 fw-normal">Clearance sale !!!
+                </h2>
+                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
+                    shop now
+                    <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
+                        <use xlink:href="#arrow-right"></use>
+                    </svg>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
