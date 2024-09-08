@@ -54,11 +54,12 @@ class User(db.Model, UserMixin):
 
 class Cart(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+    price = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     foodies_id = db.Column(db.Integer, db.ForeignKey('foodies.id'))
     clothing_id = db.Column(db.Integer, db.ForeignKey('clothing.id'))
-    quantity = db.Column(db.Integer, nullable=False, default=1)
-    price = db.Column(db.Float, nullable=False)
 
 
 class Foodies(db.Model, UserMixin):
@@ -92,7 +93,7 @@ with app.app_context():
     print(foodies)
     print(Clothing.query.all())
     print(Cart.query.all())
-    #
+
     # # Create sample foodies
     # foodies1 = Foodies(name="Fresh Kisses", description="kisses.", price=9.99, image_file="item9.jpg",
     #                    stock=50)
@@ -111,7 +112,7 @@ with app.app_context():
     # db.session.add(clothing1)
     # db.session.add(clothing2)
     # db.session.commit()
-    #
+
 
 
 @login_manager.user_loader
@@ -134,7 +135,8 @@ def index():
         total_price = sum(item.price * item.quantity for item in cart_items)
 
     return render_template("index.html", current_year=current_year, foodies=foodies_data,
-                           clothing_items=clothing_items, cart_items=cart_items, total_price=total_price,
+                           clothing_items=clothing_items,
+                           cart_items=cart_items, total_price=total_price,
                            current_user=current_user)
 
 
@@ -203,14 +205,15 @@ def single_product(product_id):
         return "Product not found", 404
 
 
-@app.route('/add_to_cart', methods=['POST', 'GET'])
+
+@app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     if not current_user.is_authenticated:
         flash("You need to log in to add items to the cart.")
         return redirect(url_for('login'))
 
     product_id = int(request.form.get('product_id'))
-    quantity = int(request.form.get('quantity', 1))  # Ensure quantity is an integer
+    quantity = int(request.form.get('quantity', 1))
 
     # Query for foodies and clothing items
     foodies_item = Foodies.query.get(product_id)
@@ -218,10 +221,10 @@ def add_to_cart():
 
     if foodies_item:
         cart_item = Cart(user_id=current_user.id, foodies_id=foodies_item.id, quantity=quantity,
-                         price=foodies_item.price)
+                         price=foodies_item.price, name=foodies_item.name)
     elif clothing_item:
         cart_item = Cart(user_id=current_user.id, clothing_id=clothing_item.id, quantity=quantity,
-                         price=clothing_item.price)
+                         price=clothing_item.price, name=clothing_item.name)
     else:
         flash("Product not found.")
         return redirect(url_for('index'))
@@ -230,17 +233,16 @@ def add_to_cart():
     db.session.add(cart_item)
     db.session.commit()
 
-    # Debug print to confirm item was added
-    print(f"Added to cart: {cart_item}")
-
     # Redirect to the index page
     return redirect(url_for('index'))
+
 
 
 @app.route('/cart')
 def show_cart():
     cart_items = []
     total_price = 0
+
 
     if current_user.is_authenticated:
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()

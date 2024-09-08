@@ -1,8 +1,9 @@
+<!-- PET FOODIES SECTION -->
 <section id="foodies" class="my-5">
     <div class="container my-5 py-5">
         <div class="section-header d-md-flex justify-content-between align-items-center">
             <h2 class="display-3 fw-normal">Pet Foodies</h2>
-                  </div>
+        </div>
         <div class="isotope-container row">
             {% for foodie in foodies %}
                 <div class="item {{ foodie.category }} col-md-4 col-lg-3 my-4">
@@ -24,10 +25,11 @@
                                 </span>
                                 <h3 class="secondary-font text-primary">${{ foodie.price }}</h3>
                                 <div class="d-flex flex-wrap mt-3">
-                                    <a href="{{ url_for('add_to_cart', product_id=foodie.id) }}"
-                                       class="btn-cart me-3 px-4 pt-3 pb-3">
-                                        <h5 class="text-uppercase m-0">Add to Cart</h5>
-                                    </a>
+                                    <form action="{{ url_for('add_to_cart') }}" method="post">
+                                        <input type="hidden" name="product_id" value="{{ foodie.id }}">
+                                        <input type="number" name="quantity" min="1" value="1">
+                                        <button type="submit">Add to Cart</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

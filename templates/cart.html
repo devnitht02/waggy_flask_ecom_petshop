@@ -14,11 +14,12 @@
                     {% for item in cart_items %}
                         <li class="list-group-item d-flex justify-content-between lh-sm">
                             <div>
-                                <h6 class="my-0">{{ item.product_name }}</h6>
-                                <small class="text-body-secondary">{{ item.description }}</small>
+                                <h6 class="my-0">{{ item.name }}<small class="text-body-secondary"> x{{ item.quantity }}</small></h6>
+
                             </div>
                             <span class="text-body-secondary">${{ item.price }}</span>
                         </li>
+
                     {% endfor %}
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="fw-bold">Total (USD)</span>
