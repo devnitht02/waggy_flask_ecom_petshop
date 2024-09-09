@@ -254,10 +254,9 @@ def add_to_cart():
         return redirect(url_for('login'))
 
     product_id = int(request.form.get('product_id'))
-    product_type = request.form.get('product_type')  # Get the product type from the form
+    product_type = request.form.get('product_type')
     quantity = int(request.form.get('quantity', 1))
 
-    # Based on the product type, fetch the correct product
     if product_type == 'foodies':
         product = Foodies.query.get(product_id)
         cart_item = Cart(user_id=current_user.id, foodies_id=product.id, quantity=quantity,
@@ -357,6 +356,21 @@ def delete():
             db.session.commit()
 
     return redirect(url_for('index'))
+
+
+def get_search_results(query):
+    results = Clothing.query.filter(Clothing.name.ilike(f'%{query}%')).all()
+    return results
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query')
+    if query:
+        results = get_search_results(query)  # Implement this function to search your database
+    else:
+        results = []
+    return render_template('search_results.html', query=query, results=results)
 
 
 if __name__ == '__main__':
