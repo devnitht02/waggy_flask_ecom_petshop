@@ -14,12 +14,17 @@
                     {% for item in cart_items %}
                         <li class="list-group-item d-flex justify-content-between lh-sm">
                             <div>
-                                <h6 class="my-0">{{ item.name }}<small class="text-body-secondary"> x{{ item.quantity }}</small></h6>
-
+                                <h6 class="my-0">{{ item.name }}<small class="text-body-secondary">
+                                    x{{ item.quantity }}</small></h6>
                             </div>
-                            <span class="text-body-secondary">${{ item.price }}</span>
-                        </li>
 
+                            <span class="text-body-secondary">${{ item.price }}</span>
+                            <form action="{{ url_for('delete') }}" method="POST">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <input type="submit" name="reset" , value="❌">
+                            </form>
+
+                        </li>
                     {% endfor %}
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="fw-bold">Total (USD)</span>

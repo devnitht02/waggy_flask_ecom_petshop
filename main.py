@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 import datetime
 from flask_login import UserMixin, current_user, login_user, logout_user, LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -114,7 +114,6 @@ with app.app_context():
     # db.session.commit()
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, user_id)
@@ -134,10 +133,12 @@ def index():
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()
         total_price = sum(item.price * item.quantity for item in cart_items)
 
+    cart_length = len(cart_items)
+
     return render_template("index.html", current_year=current_year, foodies=foodies_data,
                            clothing_items=clothing_items,
                            cart_items=cart_items, total_price=total_price,
-                           current_user=current_user)
+                           current_user=current_user, cart_length=cart_length)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -205,10 +206,9 @@ def single_product(product_id):
         return "Product not found", 404
 
 
-
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated or not Cart:
         flash("You need to log in to add items to the cart.")
         return redirect(url_for('login'))
 
@@ -237,12 +237,10 @@ def add_to_cart():
     return redirect(url_for('index'))
 
 
-
 @app.route('/cart')
 def show_cart():
     cart_items = []
     total_price = 0
-
 
     if current_user.is_authenticated:
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()
@@ -258,32 +256,36 @@ def show_cart():
 def create_checkout_session():
     try:
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()
-        line_items = []
-        for item in cart_items:
-            if item.foodies_id:
-                product = Foodies.query.get(item.foodies_id)
-            else:
-                product = Clothing.query.get(item.clothing_id)
-            line_items.append({
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': product.name,
+        if not cart_items:
+            flash("No cart items found.")
+            return redirect(url_for('index'))
+        else:
+            line_items = []
+            for item in cart_items:
+                if item.foodies_id:
+                    product = Foodies.query.get(item.foodies_id)
+                else:
+                    product = Clothing.query.get(item.clothing_id)
+                line_items.append({
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': product.name,
+                        },
+                        'unit_amount': int(product.price * 100),
                     },
-                    'unit_amount': int(product.price * 100),
-                },
-                'quantity': item.quantity,
-            })
+                    'quantity': item.quantity,
+                })
 
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=line_items,
-            mode='payment',
-            success_url=app.config["DOMAIN"] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=app.config["DOMAIN"] + '/cancel.html',
-        )
+                session = stripe.checkout.Session.create(
+                    payment_method_types=['card'],
+                    line_items=line_items,
+                    mode='payment',
+                    success_url=app.config["DOMAIN"] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
+                    cancel_url=app.config["DOMAIN"] + '/cancel.html',
+                )
 
-        return redirect(session.url, code=303)
+                return redirect(session.url, code=303)
 
     except Exception as e:
         print(f"Error during checkout: {e}")
@@ -315,6 +317,20 @@ def success():
 @app.route('/cancel.html')
 def cancel():
     return render_template('cancel.html')
+
+
+@app.route('/delete', methods=['POST'])
+def delete():
+    # Retrieve the item to delete based on the ID sent via the form
+    item_id = request.form.get('item_id')
+
+    if item_id:
+        item_to_delete = db.session.query(Cart).get(int(item_id))
+        if item_to_delete:
+            db.session.delete(item_to_delete)
+            db.session.commit()
+
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
