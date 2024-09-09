@@ -94,23 +94,64 @@ with app.app_context():
     print(Clothing.query.all())
     print(Cart.query.all())
 
-    # # Create sample foodies
-    # foodies1 = Foodies(name="Fresh Kisses", description="kisses.", price=9.99, image_file="item9.jpg",
-    #                    stock=50)
-    # foodies2 = Foodies(name="Pulsitos", description="chocolates", price=5.99,
-    #                    image_file="item11.jpg", stock=30)
+    # Creating sample foodies
+    # foodies1 = Foodies(name="Fresh Kisses", description="Delicious kisses", price=9.99, image_file="item9.jpg",
+    #                    stock=75)
     #
-    # # Create sample clothing
-    # clothing1 = Clothing(name="Black T", description="Comfortable black T-shirt.", price=15.99,
-    #                      image_file="item4.jpg", stock=100, rating=5)
-    # clothing2 = Clothing(name="Gray T", description="Stylish gray T.", price=39.99, image_file="item3.jpg", stock=75,
+    # foodies2 = Foodies(name="Pulsitos", description="Savoury Nuts", price=5.99,
+    #                    image_file="item11.jpg", stock=60)
+    #
+    # foodies3 = Foodies(name="Chicken Treats", description="Spicy Chicken Treats", price=10.99, image_file="item13.jpg",
+    #                    stock=75)
+    #
+    # foodies4 = Foodies(name="Love Corn", description="Corn", price=7.99,
+    #                    image_file="item14.jpg", stock=65)
+    #
+    # foodies5 = Foodies(name="Buchers Chicken", description="Chicken Meal", price=9.99, image_file="item10.jpg",
+    #                    stock=70)
+    #
+    # foodies6 = Foodies(name="Buchers Junior", description="Junior Chicken Meal", price=7.99,
+    #                    image_file="item12.jpg", stock=80)
+    #
+    # foodies7 = Foodies(name="Winiary", description="Dog Meal", price=2.99,
+    #                    image_file="item16.jpg", stock=50)
+    #
+    # foodies8 = Foodies(name="Buchers Medium", description="Medium Dog Meal", price=8.99,
+    #                    image_file="item15.jpg", stock=60)
+
+    # Creating sample clothing
+    # clothing1 = Clothing(name="Smoke Hoodie", description="Comfortable Smoke Hoodie.", price=25.99,
+    #                      image_file="item1.jpg", stock=100, rating=10)
+    #
+    # clothing2 = Clothing(name="Black T", description="Stylish Black T.", price=22.99, image_file="item4.jpg", stock=75,
+    #                      rating=10)
+    #
+    # clothing3 = Clothing(name="Pink T", description="Stylish Pink T", price=20.99,
+    #                      image_file="item3.jpg", stock=100, rating=10)
+    #
+    # clothing4 = Clothing(name="Yellow T", description="Stylish Yellow T", price=20.99,
+    #                      image_file="item7.jpg", stock=100, rating=8)
+    #
+    # clothing5 = Clothing(name="Cow Boy T", description="Stylish Cowboy T", price=21.99, image_file="item2.jpg",
+    #                      stock=75,
+    #                      rating=7)
+    # clothing6 = Clothing(name="Banana T", description="Stylish Banana T", price=18.99, image_file="item8.jpg", stock=60,
     #                      rating=8)
-    #
-    # # Add foodies and clothing to the database
+
     # db.session.add(foodies1)
     # db.session.add(foodies2)
+    # db.session.add(foodies3)
+    # db.session.add(foodies4)
+    # db.session.add(foodies5)
+    # db.session.add(foodies6)
+    # db.session.add(foodies7)
+    # db.session.add(foodies8)
     # db.session.add(clothing1)
     # db.session.add(clothing2)
+    # db.session.add(clothing3)
+    # db.session.add(clothing4)
+    # db.session.add(clothing5)
+    # db.session.add(clothing6)
     # db.session.commit()
 
 
@@ -208,48 +249,34 @@ def single_product(product_id):
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
-    if not current_user.is_authenticated or not Cart:
+    if not current_user.is_authenticated:
         flash("You need to log in to add items to the cart.")
         return redirect(url_for('login'))
 
     product_id = int(request.form.get('product_id'))
+    product_type = request.form.get('product_type')  # Get the product type from the form
     quantity = int(request.form.get('quantity', 1))
 
-    # Query for foodies and clothing items
-    foodies_item = Foodies.query.get(product_id)
-    clothing_item = Clothing.query.get(product_id)
-
-    if foodies_item:
-        cart_item = Cart(user_id=current_user.id, foodies_id=foodies_item.id, quantity=quantity,
-                         price=foodies_item.price, name=foodies_item.name)
-    elif clothing_item:
-        cart_item = Cart(user_id=current_user.id, clothing_id=clothing_item.id, quantity=quantity,
-                         price=clothing_item.price, name=clothing_item.name)
+    # Based on the product type, fetch the correct product
+    if product_type == 'foodies':
+        product = Foodies.query.get(product_id)
+        cart_item = Cart(user_id=current_user.id, foodies_id=product.id, quantity=quantity,
+                         price=product.price, name=product.name)
+    elif product_type == 'clothing':
+        product = Clothing.query.get(product_id)
+        cart_item = Cart(user_id=current_user.id, clothing_id=product.id, quantity=quantity,
+                         price=product.price, name=product.name)
     else:
+        flash("Product type not recognized.")
+        return redirect(url_for('index'))
+
+    if product is None:
         flash("Product not found.")
         return redirect(url_for('index'))
 
-    # Add cart item to the database
     db.session.add(cart_item)
     db.session.commit()
-
-    # Redirect to the index page
     return redirect(url_for('index'))
-
-
-@app.route('/cart')
-def show_cart():
-    cart_items = []
-    total_price = 0
-
-    if current_user.is_authenticated:
-        cart_items = Cart.query.filter_by(user_id=current_user.id).all()
-        total_price = sum(item.price * item.quantity for item in cart_items)
-
-    # Debug print to confirm data retrieval
-    print(f"Cart items: {cart_items}")
-
-    return render_template('cart.html', cart_items=cart_items, total_price=total_price, current_user=current_user)
 
 
 @app.route('/checkout', methods=["GET"])
@@ -321,7 +348,6 @@ def cancel():
 
 @app.route('/delete', methods=['POST'])
 def delete():
-    # Retrieve the item to delete based on the ID sent via the form
     item_id = request.form.get('item_id')
 
     if item_id:

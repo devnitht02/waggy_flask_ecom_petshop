@@ -30,9 +30,11 @@
                                     <span class="rating secondary-font">
                                         {% for i in range(5) %}
                                             {% if i < item.rating %}
-                                                <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                                <iconify-icon icon="clarity:star-solid"
+                                                              class="text-primary"></iconify-icon>
                                             {% else %}
-                                                <iconify-icon icon="clarity:star-line" class="text-primary"></iconify-icon>
+                                                <iconify-icon icon="clarity:star-line"
+                                                              class="text-primary"></iconify-icon>
                                             {% endif %}
                                         {% endfor %}
                                         {{ item.rating }}
@@ -41,9 +43,11 @@
                                     <div class="d-flex flex-wrap mt-3">
                                         <form action="{{ url_for('add_to_cart') }}" method="post">
                                             <input type="hidden" name="product_id" value="{{ item.id }}">
+                                            <input type="hidden" name="product_type" value="clothing">
                                             <input type="number" name="quantity" min="1" value="1">
                                             <button type="submit">Add to Cart</button>
                                         </form>
+
                                     </div>
                                 </div>
                             </div>
