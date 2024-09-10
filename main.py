@@ -285,37 +285,40 @@ def create_checkout_session():
         if not cart_items:
             flash("No cart items found.")
             return redirect(url_for('index'))
-        else:
-            line_items = []
-            for item in cart_items:
-                if item.foodies_id:
-                    product = Foodies.query.get(item.foodies_id)
-                else:
-                    product = Clothing.query.get(item.clothing_id)
-                line_items.append({
-                    'price_data': {
-                        'currency': 'usd',
-                        'product_data': {
-                            'name': product.name,
-                        },
-                        'unit_amount': int(product.price * 100),
+
+        line_items = []
+        for item in cart_items:
+            if item.foodies_id:
+                product = Foodies.query.get(item.foodies_id)
+            else:
+                product = Clothing.query.get(item.clothing_id)
+
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': product.name,
                     },
-                    'quantity': item.quantity,
-                })
+                    'unit_amount': int(product.price * 100),
+                },
+                'quantity': item.quantity,
+            })
 
-                session = stripe.checkout.Session.create(
-                    payment_method_types=['card'],
-                    line_items=line_items,
-                    mode='payment',
-                    success_url=app.config["DOMAIN"] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-                    cancel_url=app.config["DOMAIN"] + '/cancel.html',
-                )
+        # Create the Stripe checkout session after collecting all line items
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            success_url=app.config["DOMAIN"] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=app.config["DOMAIN"] + '/cancel.html',
+        )
 
-                return redirect(session.url, code=303)
+        return redirect(session.url, code=303)
 
     except Exception as e:
         print(f"Error during checkout: {e}")
         return jsonify(error=str(e)), 500
+
 
 
 @app.route('/session-status', methods=['GET'])
