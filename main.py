@@ -256,22 +256,30 @@ def add_to_cart():
 
     product_id = int(request.form.get('product_id'))
     product_type = request.form.get('product_type')
-    quantity = int(request.form.get('quantity', 1))
+
+    try:
+        quantity = int(request.form.get('quantity', 1))
+    except ValueError:
+        quantity = 1  # Fallback to default quantity if conversion fails
 
     if product_type == 'foodies':
         product = Foodies.query.get(product_id)
-        cart_item = Cart(user_id=current_user.id, foodies_id=product.id, quantity=quantity,
-                         price=product.price, name=product.name)
+        if product:
+            cart_item = Cart(user_id=current_user.id, foodies_id=product.id, quantity=quantity,
+                             price=product.price, name=product.name)
+        else:
+            flash("Product not found.")
+            return redirect(url_for('index'))
     elif product_type == 'clothing':
         product = Clothing.query.get(product_id)
-        cart_item = Cart(user_id=current_user.id, clothing_id=product.id, quantity=quantity,
-                         price=product.price, name=product.name)
+        if product:
+            cart_item = Cart(user_id=current_user.id, clothing_id=product.id, quantity=quantity,
+                             price=product.price, name=product.name)
+        else:
+            flash("Product not found.")
+            return redirect(url_for('index'))
     else:
         flash("Product type not recognized.")
-        return redirect(url_for('index'))
-
-    if product is None:
-        flash("Product not found.")
         return redirect(url_for('index'))
 
     db.session.add(cart_item)
@@ -311,7 +319,7 @@ def create_checkout_session():
             line_items=line_items,
             mode='payment',
             success_url=app.config["DOMAIN"] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=app.config["DOMAIN"] + '/cancel.html',
+            cancel_url=app.config["DOMAIN"] + '/cancel',
         )
 
         return redirect(session.url, code=303)
@@ -329,7 +337,7 @@ def session_status():
     return jsonify(status=session.status, customer_email=session.customer_email)
 
 
-@app.route('/success')
+@app.route('/success.html')
 def success():
     session_id = request.args.get('session_id')
 
