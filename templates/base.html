@@ -117,7 +117,7 @@
                         </a>
                     </div>
                 </div>
-{#SEARCH FORM#}
+                {#SEARCH FORM#}
                 <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block">
                     <div class="search-bar border rounded-2 px-3 border-dark-subtle">
                         <form id="search-form" class="text-center d-flex align-items-center"
@@ -203,26 +203,23 @@
                     </div>
 
                     <div class="offcanvas-body justify-content-between">
-                        <center>
-                            <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
-                                <li class="nav-item">
-                                    <a href="{{ url_for('index') }}" class="nav-link active">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index.html" class="nav-link">Shop</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index.html" class="nav-link">Blog</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index.html" class="nav-link">Contact</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index.html" class="nav-link">Others</a>
-                                </li>
-                            </ul>
-                        </center>
-
+                        <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
+                            <li class="nav-item">
+                                <a href="{{ url_for('index') }}" class="nav-link active">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="index.html" class="nav-link">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="about.html" class="nav-link">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="contact.html" class="nav-link">Contact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('create_checkout_session') }}" class="nav-link">Checkout</a>
+                            </li>
+                        </ul>
 
                         <div class="d-none d-lg-flex align-items-end">
                             <ul class="d-flex justify-content-end list-unstyled m-0">

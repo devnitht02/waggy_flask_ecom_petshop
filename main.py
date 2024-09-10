@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select, asc
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.security import generate_password_hash, check_password_hash
+import smtplib
 import stripe
 import os
 
@@ -320,7 +321,6 @@ def create_checkout_session():
         return jsonify(error=str(e)), 500
 
 
-
 @app.route('/session-status', methods=['GET'])
 def session_status():
     session_id = request.args.get('session_id')
@@ -329,7 +329,7 @@ def session_status():
     return jsonify(status=session.status, customer_email=session.customer_email)
 
 
-@app.route('/success.html')
+@app.route('/success')
 def success():
     session_id = request.args.get('session_id')
 
@@ -343,7 +343,7 @@ def success():
         return "Session ID is missing", 400
 
 
-@app.route('/cancel.html')
+@app.route('/cancel')
 def cancel():
     return render_template('cancel.html')
 
@@ -374,6 +374,32 @@ def search():
     else:
         results = []
     return render_template('search_results.html', query=query, results=results)
+
+
+@app.route('/newsletter', methods=['POST'])
+def newsletter():
+    if request.method == 'POST':
+        email = request.form.get('email')
+
+        my_email = os.environ.get("FB_EMAIL")
+        my_password = os.environ.get("FB_PASS")
+        sender_email = email
+
+        connection = smtplib.SMTP('smtp.gmail.com', 587)
+        connection.starttls()
+        connection.login(user=my_email, password=my_password)
+        email_message = (f"Subject: Waggy Newsletter\n\nHey! \n Thanks for subscribing for our newsletter!</b>\n\n>")
+        connection.sendmail(
+            from_addr=my_email,
+            to_addrs=sender_email,
+            msg=email_message.encode("utf-8")
+        )
+        connection.quit()
+        if email_message:
+            flash("Email sent successfully")
+        else:
+            flash("Oops! something went wrong")
+    return render_template("index.html", current_user=current_user)
 
 
 if __name__ == '__main__':
