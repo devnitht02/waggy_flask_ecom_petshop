@@ -73,13 +73,15 @@
             </div>
         </div>
     </section>
-<br><br><br>
+    <br><br><br>
 
     {% include "pet_clothing.html" %}
     {% include "foodies.html" %}
     {% include "testimonials.html" %}
 
+
     <!--  REGISTRATION FORM-->
+
     <section id="register" style="background: url('../static/assets/images/background-img.png') no-repeat;">
         <div class="container ">
             <div class="row my-5 py-5">
@@ -94,32 +96,36 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    <form action="{{ url_for('register') }}" method="POST">
-                        <div class="mb-3">
-                            <input type="text" class="form-control form-control-lg" name="name" id="name"
-                                   placeholder="Enter Your Name">
-                        </div>
-                        <div class="mb-3">
-                            <input type="email" class="form-control form-control-lg" name="email" id="email"
-                                   placeholder="Enter Your Email Address" style="text-transform: lowercase">
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control form-control-lg" name="email" id="password1"
-                                   placeholder="Create Password">
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control form-control-lg" name="password" id="password2"
-                                   placeholder="Repeat Password">
-                        </div>
+                    {% if not current_user.is_authenticated %}
+                        <form action="{{ url_for('register') }}" method="POST">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" name="name" id="name"
+                                       placeholder="Enter Your Name">
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control form-control-lg" name="email" id="email"
+                                       placeholder="Enter Your Email Address" style="text-transform: lowercase">
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" class="form-control form-control-lg" name="email" id="password1"
+                                       placeholder="Create Password">
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" class="form-control form-control-lg" name="password"
+                                       id="password2"
+                                       placeholder="Repeat Password">
+                            </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-dark btn-lg rounded-1">Register it now</button>
-                        </div>
-                    </form>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-dark btn-lg rounded-1">Register it now</button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </section>
+
     {% include "latest_items.html" %}
     {% include "services.html" %}
 

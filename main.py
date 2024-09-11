@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 import datetime
-from flask_login import UserMixin, current_user, login_user, logout_user, LoginManager
+from flask_login import UserMixin, current_user, login_user, logout_user, LoginManager, login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select, asc
 from sqlalchemy.orm import DeclarativeBase
@@ -49,11 +49,10 @@ class User(db.Model, UserMixin):
 
     @property
     def is_user_active(self):
-        """Returns True if the user account is active."""
         return self.is_active
 
 
-class Cart(db.Model, UserMixin):
+class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
@@ -63,7 +62,7 @@ class Cart(db.Model, UserMixin):
     clothing_id = db.Column(db.Integer, db.ForeignKey('clothing.id'))
 
 
-class Foodies(db.Model, UserMixin):
+class Foodies(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -75,7 +74,7 @@ class Foodies(db.Model, UserMixin):
         return f'<Foodies {self.name}>'
 
 
-class Clothing(db.Model, UserMixin):
+class Clothing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -162,6 +161,7 @@ def load_user(user_id):
 
 
 @app.route('/')
+@login_required
 def index():
     current_year = datetime.datetime.now().year
 
@@ -249,6 +249,7 @@ def single_product(product_id):
 
 
 @app.route('/add_to_cart', methods=['POST'])
+@login_required
 def add_to_cart():
     if not current_user.is_authenticated:
         flash("You need to log in to add items to the cart.")
@@ -288,6 +289,7 @@ def add_to_cart():
 
 
 @app.route('/checkout', methods=["GET"])
+@login_required
 def create_checkout_session():
     try:
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()
@@ -408,6 +410,16 @@ def newsletter():
         else:
             flash("Oops! something went wrong")
     return render_template("index.html", current_user=current_user)
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 
 if __name__ == '__main__':

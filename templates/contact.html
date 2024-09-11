@@ -2,22 +2,52 @@
 <head>
     <meta charset="UTF-8">
     {% block title %}
-        <title>Contact</title>
+        <title>Contact Us</title>
     {% endblock %}
 </head>
 <body>
-{% block content %}
-    <section id="register" style="background: url('../static/assets/images/background-img.png') no-repeat;">
-        <div class="container ">
-            <div class="row my-5 py-5">
-                <div class="offset-md-3 col-md-6 my-5 ">
-                    <h2 class="display-3 fw-normal text-center"><span class="text-primary">Contact Us</span></h2>
-
+    {% block content %}
+    <section id="contact" style="background: url('../static/assets/images/background-img.png')">
+        <div class="container">
+            <div class="row my-5 py-8">
+                <div class="col-md-12 my-5 text-center">
+                    <h2 class="display-3 fw-normal"><span class="text-primary">Contact Us</span></h2>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-md-6">
+                    <h3 class="text-primary">Get in Touch</h3>
+                    <p>
+                        We’d love to hear from you! Whether you have questions, feedback, or just want to say hello, feel free to reach out to us. Fill out the form below, and we’ll get back to you as soon as possible.
+                    </p>
+                    <form action="{{ url_for('contact') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="text-primary">Our Contact Information</h3>
+                    <ul>
+                        <li><strong>Address:</strong> 123 Pet Street, Petville, PV 12345</li>
+                        <li><strong>Phone:</strong> +1 (555) 123-4567</li>
+                        <li><strong>Email:</strong> contact@waggy.com</li>
+                        <li><strong>Business Hours:</strong> Mon-Fri, 9:00 AM - 6:00 PM</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Your content goes here -->
-{% endblock %}
+    {% endblock %}
 </body>
 {% include "footer.html" %}
