@@ -28,6 +28,7 @@
                                     <form action="{{ url_for('add_to_cart') }}" method="POST">
                                         <input type="hidden" name="product_id" value="{{ foodie.id }}">
                                         <input type="hidden" name="product_type" value="foodies">
+                                        <input type="hidden" name="category" value="foodies">
 
                                         <label for="quantity">Quantity</label>
                                         <input type="number" name="quantity" min="1" value="1"

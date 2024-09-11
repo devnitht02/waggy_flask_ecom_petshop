@@ -249,43 +249,47 @@ def single_product(product_id):
 
 
 @app.route('/add_to_cart', methods=['POST'])
-@login_required
 def add_to_cart():
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated or not Cart:
         flash("You need to log in to add items to the cart.")
         return redirect(url_for('login'))
 
     product_id = int(request.form.get('product_id'))
-    product_type = request.form.get('product_type')
+    quantity = int(request.form.get('quantity', 1))
+    category = request.form.get('category') #Created a category to get the foodies or the clothing.
 
-    try:
-        quantity = int(request.form.get('quantity', 1))
-    except ValueError:
-        quantity = 1  # Fallback to default quantity if conversion fails
-
-    if product_type == 'foodies':
-        product = Foodies.query.get(product_id)
-        if product:
-            cart_item = Cart(user_id=current_user.id, foodies_id=product.id, quantity=quantity,
-                             price=product.price, name=product.name)
-        else:
-            flash("Product not found.")
-            return redirect(url_for('index'))
-    elif product_type == 'clothing':
-        product = Clothing.query.get(product_id)
-        if product:
-            cart_item = Cart(user_id=current_user.id, clothing_id=product.id, quantity=quantity,
-                             price=product.price, name=product.name)
-        else:
-            flash("Product not found.")
-            return redirect(url_for('index'))
+    if category == 'foodies':
+        foodies_item = Foodies.query.get(product_id)
+        if foodies_item:
+            cart_item = Cart(user_id=current_user.id, foodies_id=foodies_item.id, clothing_id=None, quantity=quantity,
+                             price=foodies_item.price, name=foodies_item.name)
+            db.session.add(cart_item)
+    elif category == 'clothing':
+        clothing_item = Clothing.query.get(product_id)
+        if clothing_item:
+            cart_item = Cart(user_id=current_user.id, clothing_id=clothing_item.id, foodies_id=None, quantity=quantity,
+                             price=clothing_item.price, name=clothing_item.name)
+            db.session.add(cart_item)
     else:
-        flash("Product type not recognized.")
+        flash("Product not found.")
         return redirect(url_for('index'))
 
-    db.session.add(cart_item)
     db.session.commit()
     return redirect(url_for('index'))
+
+
+@app.route('/cart')
+def show_cart():
+    cart_items = []
+    total_price = 0
+
+    if current_user.is_authenticated:
+        cart_items = Cart.query.filter_by(user_id=current_user.id).all()
+        total_price = sum(item.price * item.quantity for item in cart_items)
+
+    print(f"Cart items: {cart_items}")
+
+    return render_template('cart.html', cart_items=cart_items, total_price=total_price, current_user=current_user)
 
 
 @app.route('/checkout', methods=["GET"])
