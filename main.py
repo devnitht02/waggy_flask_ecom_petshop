@@ -67,7 +67,7 @@ class Foodies(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    image_file = db.Column(db.String(255), nullable=True)  # Changed from image_url to image_file
+    image_file = db.Column(db.String(255), nullable=True)  # Changing from image_url to image_file
     stock = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
@@ -79,7 +79,7 @@ class Clothing(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    image_file = db.Column(db.String(255), nullable=True)  # Changed from image_url to image_file
+    image_file = db.Column(db.String(255), nullable=True)  # Changing from image_url to image_file
     stock = db.Column(db.Integer, nullable=False, default=0)
     rating = db.Column(db.Integer, nullable=True)
 
@@ -230,7 +230,7 @@ def login():
             flash('Invalid password.')
             return redirect(url_for('login'))
         else:
-            login_user(user)  # Pass the user object, not current_user
+            login_user(user)  # Passing the user object, not current_user
             return redirect(url_for('index'))
 
     return render_template("login.html", current_user=current_user)
@@ -391,7 +391,7 @@ def get_search_results(query):
 def search():
     query = request.args.get('query')
     if query:
-        results = get_search_results(query)  # Implement this function to search your database
+        results = get_search_results(query)  # Implemented a search function for the db
     else:
         results = []
     return render_template('search_results.html', query=query, results=results)

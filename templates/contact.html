@@ -7,47 +7,54 @@
 </head>
 <body>
 {% block content %}
-    <section id="contact" style="background: url('../static/assets/images/background-img.png')">
-        <div class="container">
-            <div class="row my-5 py-8">
-                <div class="col-md-12 my-5 text-center">
-                    <h2 class="display-3 fw-normal"><span class="text-primary">Contact Us</span></h2>
+    <section id="contact" class="py-5" style="background: url('../static/assets/images/background-img.png') no-repeat center; background-size: cover;">
+        <div class="container py-5">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="display-4 fw-bold"><span class="text-primary">Contact Us</span></h1>
+                    <p class="lead text-muted">We’d love to hear from you! Fill out the form below and we’ll get back to you as soon as possible.</p>
                 </div>
             </div>
-            <div class="row justify-content-center my-4">
-                <div class="col-md-6">
-                    <h3 class="text-primary text-center">Get in Touch</h3>
-                    <p class="text-center">
-                        We’d love to hear from you! Whether you have questions, feedback, or just want to say hello,
-                        feel free to reach out to us. Fill out the form below, and we’ll get back to you as soon as
-                        possible.
-                    </p>
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            {% for message in messages %}
-                                <p class="flash">{{ message }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                    <form action="{{ url_for('contact') }}" method="POST" class="text-center">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card shadow-lg p-4 border-0 rounded">
+                        <div class="card-body">
+                            {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    <div class="alert alert-success">
+                                        {% for message in messages %}
+                                            {{ message }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            <form action="{{ url_for('contact') }}" method="POST" class="needs-validation" novalidate>
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                                    <label for="name">Name</label>
+                                    <div class="invalid-feedback">Please enter your name.</div>
+                                </div>
+                                <div class="form-floating mb-4">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                                    <label for="email">Email address</label>
+                                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                                </div>
+                                <div class="form-floating mb-4">
+                                    <textarea class="form-control" placeholder="Leave your message here" id="message" name="message" style="height: 150px;" required></textarea>
+                                    <label for="message">Message</label>
+                                    <div class="invalid-feedback">Please enter a message.</div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </form>
+                    </div>
                 </div>
             </div>
             <div class="row justify-content-center mt-5">
-                <div class="col-md-6 text-center">
+                <div class="col-lg-6 col-md-8 text-center">
                     <h3 class="text-primary">Our Contact Information</h3>
                     <ul class="list-unstyled">
                         <li><strong>Address:</strong> 123 Pet Street, Petville, PV 12345</li>
