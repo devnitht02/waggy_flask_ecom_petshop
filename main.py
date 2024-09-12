@@ -87,6 +87,13 @@ class Clothing(db.Model):
         return f'<Clothing {self.name}>'
 
 
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    message = db.Column(db.Text, nullable=False)
+
+
 with app.app_context():
     db.create_all()
     foodies = Foodies.query.all()
@@ -94,7 +101,7 @@ with app.app_context():
     print(Clothing.query.all())
     print(Cart.query.all())
 
-    # Creating sample foodies
+    # # Creating sample foodies
     # foodies1 = Foodies(name="Fresh Kisses", description="Delicious kisses", price=9.99, image_file="item9.jpg",
     #                    stock=75)
     #
@@ -118,8 +125,8 @@ with app.app_context():
     #
     # foodies8 = Foodies(name="Buchers Medium", description="Medium Dog Meal", price=8.99,
     #                    image_file="item15.jpg", stock=60)
-
-    # Creating sample clothing
+    #
+    # # Creating sample clothing
     # clothing1 = Clothing(name="Smoke Hoodie", description="Comfortable Smoke Hoodie.", price=25.99,
     #                      image_file="item1.jpg", stock=100, rating=10)
     #
@@ -137,7 +144,7 @@ with app.app_context():
     #                      rating=7)
     # clothing6 = Clothing(name="Banana T", description="Stylish Banana T", price=18.99, image_file="item8.jpg", stock=60,
     #                      rating=8)
-
+    #
     # db.session.add(foodies1)
     # db.session.add(foodies2)
     # db.session.add(foodies3)
@@ -161,7 +168,7 @@ def load_user(user_id):
 
 
 @app.route('/')
-@login_required
+# @login_required
 def index():
     current_year = datetime.datetime.now().year
 
@@ -256,7 +263,7 @@ def add_to_cart():
 
     product_id = int(request.form.get('product_id'))
     quantity = int(request.form.get('quantity', 1))
-    category = request.form.get('category') #Created a category to get the foodies or the clothing.
+    category = request.form.get('category')  # Created a category to get the foodies or the clothing.
 
     if category == 'foodies':
         foodies_item = Foodies.query.get(product_id)
@@ -416,8 +423,41 @@ def newsletter():
     return render_template("index.html", current_user=current_user)
 
 
-@app.route('/contact')
+@app.route('/contact', methods=['POST', 'GET'])
 def contact():
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+
+        data = Contact(
+            name=name,
+            email=email,
+            message=message
+        )
+        db.session.add(data)
+        db.session.commit()
+
+        my_email = os.environ.get("FB_EMAIL")
+        my_password = os.environ.get("FB_PASS")
+        sender_email = email
+
+        connection = smtplib.SMTP('smtp.gmail.com', 587)
+        connection.starttls()
+        connection.login(user=my_email, password=my_password)
+        email_message = (
+            f"Subject: Waggy\n\nHey!{name} \n Thanks for contacting us. we wil get in touch with you asap!\n\n")
+        connection.sendmail(
+            from_addr=my_email,
+            to_addrs=sender_email,
+            msg=email_message.encode("utf-8")
+        )
+        connection.quit()
+        if email_message:
+            flash("Email sent successfully")
+        else:
+            flash("Oops! something went wrong")
+
     return render_template('contact.html')
 
 

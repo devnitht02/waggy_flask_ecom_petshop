@@ -167,9 +167,11 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('logout') }}">
+                                    <iconify-icon icon="mdi:logout" class="fs-4"></iconify-icon>
                                     Logout
                                 </a>
                             </li>
+
                         {% else %}
                             <li>
                                 <a href="{{ url_for('register') }}" class="mx-3">
