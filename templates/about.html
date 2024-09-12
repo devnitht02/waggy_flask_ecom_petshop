@@ -1,0 +1,91 @@
+{% include "base.html" %}
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+        <title>About Us</title>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <!-- About Us Section -->
+    <section id="about" class="py-5" style="background: url('../static/assets/images/background-img.png') no-repeat center; background-size: cover;">
+        <div class="container py-5">
+            <!-- Title Section -->
+            <div class="row mb-5 text-center">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="display-3 fw-bold text-white"><span class="text-primary">About Us</span></h1>
+                    <p class="lead text-light">Discover who we are and what makes Waggy a trusted name in pet care.</p>
+                </div>
+            </div>
+
+            <!-- Our Story Section -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-lg p-4 border-0">
+                        <div class="card-body">
+                            <h3 class="text-primary">Our Story</h3>
+                            <p class="text-muted">
+                                Welcome to Waggy, your go-to destination for all things pet-related! Established in 2024, our mission is to provide pet owners with high-quality products and exceptional service. From playful puppies to cuddly cats, we cater to the needs of pets and their owners alike, ensuring that every furry friend receives the best care and attention.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What We Do Section -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-lg p-4 border-0">
+                        <div class="card-body">
+                            <h3 class="text-primary">What We Do</h3>
+                            <p class="text-muted">
+                                At Waggy, we specialize in offering a wide range of pet products, including premium food, stylish accessories, and essential supplies. Our team is passionate about pets and is dedicated to curating a selection of top-quality items that meet the highest standards. We strive to make pet care convenient and enjoyable for you and your beloved companions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Our Services Section -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-lg p-4 border-0">
+                        <div class="card-body">
+                            <h3 class="text-primary">Our Services</h3>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Pet Food:</strong> Premium nutrition for dogs, cats, and other pets.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Pet Accessories:</strong> From collars to beds, find the perfect gear for your pet.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Pet Supplies:</strong> Essential items for everyday care and grooming.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Personalized Recommendations:</strong> Get expert advice tailored to your pet's needs.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Industry Exposure Section -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-lg p-4 border-0">
+                        <div class="card-body">
+                            <h3 class="text-primary">Years of Industry Exposure</h3>
+                            <p class="text-muted">
+                                With over 10 years of experience in the pet care industry, our team at Waggy is well-versed in the needs and preferences of pets and their owners. Our extensive knowledge and dedication to quality have made us a trusted name in pet e-commerce, and we continue to innovate and expand our offerings to serve you better.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock %}
+</body>
+{% include "footer.html" %}
